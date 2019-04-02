@@ -26,24 +26,25 @@ library(RCurl)
 options(shiny.usecairo=T)
 
 # ----- load data -----
-# data of beneficiaries
-benef <- read_csv('app_data/beneficiaries_anonymised.csv')
 # download from figshare
-#project_url <- ''
-#benef_url <- getURL(paste(project_url, 'beneficiaries_anonymised.csv', sep = '/'))
-#benef <- read_csv(textConnection(benef_url))
+fs_url <- "https://ndownloader.figshare.com/files"
+
+# data of beneficiaries
+benef <- readr::read_csv(paste(fs_url, '14752466', sep = '/'))
 
 # data for affiliations
-affil <- read_csv('app_data/affiliations_fix.csv') %>% 
+affil <- readr::read_csv(paste(fs_url, '14752463', sep = '/')) %>% 
   select(-city)
+
 # data of activities
-activ <- read_csv('app_data/activities_fix.csv') %>% 
+activ <- readr::read_csv(paste(fs_url, '14752469', sep = '/')) %>% 
   # ----- make variable quarter for 2018/19 project, 5 quarters in total ---
   mutate(quarter = lubridate::quarter(start_date, 
                                       with_year = TRUE, 
                                       fiscal_start = 1))
+
 # data of participation of beneficiaries in activities
-parti <- read_csv('app_data/participation_fix.csv') %>% 
+parti <- readr::read_csv(paste(fs_url, '14752460', sep = '/')) %>% 
   select(-participation_type)
 
 # join into one dataframe
@@ -113,9 +114,14 @@ ui <- fluidPage(
       * {
         font-family: 'Arial';    # * means Arial will be used for all text, otherwise can use h1, p ...
       }
-    "))
+    ")),
+    
+    # for responsive iframe embedding on webpage
+    tags$script(src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js",
+                type="text/javascript")
   ),
    
+  
    # Application title
    titlePanel("Activities and beneficiaries of the RCCPII Capacity Development Initiative 2018/19"),
    
@@ -357,7 +363,10 @@ ui <- fluidPage(
               ) # end sidebarLayout
      ) # end tabPanel barplot beneficiaries
      
-   ) # end tabsetPanel
+   ), # end tabsetPanel
+  
+  HTML('<div data-iframe-height></div>')
+  
 ) # end fluidPage
 
 

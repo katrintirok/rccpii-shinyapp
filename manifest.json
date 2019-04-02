@@ -2982,20 +2982,8 @@
     }
   },
   "files": {
-    "app_data/activities_fix.csv": {
-      "checksum": "b0ac8da4d6f89b0c371403025b76d1ed"
-    },
-    "app_data/affiliations_fix.csv": {
-      "checksum": "bc7ae9a1a442f52e87e5aceb57954bf3"
-    },
-    "app_data/beneficiaries_anonymised.csv": {
-      "checksum": "acc328c231f9ce917fff91a2e4e53b4f"
-    },
     "app_data/logo_license.png": {
       "checksum": "dc31fe147fc119c8cb2c4ecbf5ef08d3"
-    },
-    "app_data/participation_fix.csv": {
-      "checksum": "a878d673a23ea0fc6d38eb8f7b8375ee"
     },
     "app_functions/my_barplot_plain.R": {
       "checksum": "4d771c42ba8fb6a3f253e213f1e0b2df"
@@ -3010,7 +2998,7 @@
       "checksum": "0f393e811475c8ad194085e7acaaf121"
     },
     "app.R": {
-      "checksum": "cc96750b4b5abb3c39537b5678fd4957"
+      "checksum": "705ce6d107ec0b5d1d8f8850003d7734"
     },
     "packrat/desc/askpass": {
       "checksum": "71e38c0451079d9dcc74ce8997a688c9"
