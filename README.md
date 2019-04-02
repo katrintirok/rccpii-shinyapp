@@ -3,6 +3,8 @@
 ### Authors
 Katrin Tirok, Anelda van der Walt
 
+published at: https://rccpii-data.shinyapps.io/capacity-development/
+
 ### Description
 
 [RCCPII](https://tenet-rccpii.github.io/rccpii-2018/) is the Rural Campuses Connection Project phase II. 
