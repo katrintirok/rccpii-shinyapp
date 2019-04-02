@@ -1,6 +1,7 @@
 # A shinyapp to look at the impact of the RCCPII Capacity Development Initiative in South Africa
 
-## Authors: Katrin Tirok, Anelda van der Walt
+### Authors
+Katrin Tirok, Anelda van der Walt
 
 [RCCPII](https://tenet-rccpii.github.io/rccpii-2018/) is the Rural Campuses Connection Project phase II. 
 
