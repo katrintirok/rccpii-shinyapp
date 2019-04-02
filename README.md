@@ -1,5 +1,7 @@
 # A shinyapp to look at the impact of the RCCPII Capacity Development Initiative in South Africa
 
+## Authors: Katrin Tirok, Anelda van der Walt
+
 [RCCPII](https://tenet-rccpii.github.io/rccpii-2018/) is the Rural Campuses Connection Project phase II. 
 
 Since 2010 RCCP I and RCCP II have been working with stakeholders to bring Internet connectivity to various higher education and research sites around South Africa. The project is a collaboration between DHET, USAF, TENET, and others.
