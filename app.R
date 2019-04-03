@@ -30,21 +30,21 @@ options(shiny.usecairo=T)
 fs_url <- "https://ndownloader.figshare.com/files"
 
 # data of beneficiaries
-benef <- readr::read_csv(paste(fs_url, '14752466', sep = '/'))
+benef <- readr::read_csv(paste(fs_url, '14789663', sep = '/'))
 
-# data for affiliations
+# data for affiliations  
 affil <- readr::read_csv(paste(fs_url, '14752463', sep = '/')) %>% 
   select(-city)
 
-# data of activities
-activ <- readr::read_csv(paste(fs_url, '14752469', sep = '/')) %>% 
+# data of activities   
+activ <- readr::read_csv(paste(fs_url, '14789693', sep = '/')) %>% 
   # ----- make variable quarter for 2018/19 project, 5 quarters in total ---
   mutate(quarter = lubridate::quarter(start_date, 
                                       with_year = TRUE, 
                                       fiscal_start = 1))
 
 # data of participation of beneficiaries in activities
-parti <- readr::read_csv(paste(fs_url, '14752460', sep = '/')) %>% 
+parti <- readr::read_csv(paste(fs_url, '14789705', sep = '/')) %>% 
   select(-participation_type)
 
 # join into one dataframe
@@ -117,6 +117,7 @@ ui <- fluidPage(
     ")),
     
     # for responsive iframe embedding on webpage
+    # (https://www.cultureofinsight.com/blog/2018/03/15/2018-03-15-responsive-iframes-for-shiny-apps/)
     tags$script(src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/3.5.16/iframeResizer.contentWindow.min.js",
                 type="text/javascript")
   ),
@@ -365,6 +366,7 @@ ui <- fluidPage(
      
    ), # end tabsetPanel
   
+  # for responsive iframe embedding on webpage
   HTML('<div data-iframe-height></div>')
   
 ) # end fluidPage

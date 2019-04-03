@@ -29,11 +29,11 @@ my_map_activ <- function(x,
   x[mapping_var] <- factor(x[[mapping_var]])  # factor needs a vector as argument, x[[]] returns vector (x[] returns a tibble)
   
   # define popup variable and label
-  x$popup_var <- paste(paste('<b><a href=', x$web_url, '>', x$activity_type, '</a></b>', sep=''),
+  x$popup_var <- paste(paste('<b><a href=', x$web_url, ' rel="noopener noreferrer" target="_blank">', x$activity_type, '</a></b>', sep=''),
                            x$host,
                            paste(lubridate::month(x$start_date, label = T), lubridate::year(x$start_date)), 
                            ifelse(!is.na(x$news_url), 
-                                  paste('<b><a href=', x$news_url, '>read more</a></b>', sep=''), 
+                                  paste('<b><a href=', x$news_url, ' rel="noopener noreferrer" target="_blank">read more</a></b>', sep=''), 
                                   ""),
                            sep = '<br/>')
   x$label_var <- x$activity_type
