@@ -22,7 +22,8 @@ my_map_activ <- function(x,
     filter(participation_type != 'online') %>%   # don't label online events
     select(host, venue_lat, venue_lon)
   x_hosts <- x_hosts[!duplicated(x_hosts),]  # remove duplicated entries, otherwise labels wont show
-  
+
+    
   # ----- make mapping_var a factor -----
   # replace NA values with Unknown
   x[is.na(x[mapping_var]), mapping_var] <- 'Unknown'
@@ -81,47 +82,56 @@ my_map_activ <- function(x,
     
     # define map pane for labels (affiliations) to control overlay on map
     leaflet::addMapPane("map_labels", 
-                        zIndex = 450) %>%
+                        zIndex = 450)
     
-    # ----- add labels for hosts -----
-    leaflet::addLabelOnlyMarkers(data = x, 
-                                 lng = x_hosts$venue_lon, 
-                                 lat = x_hosts$venue_lat, 
-                                 label = ~x_hosts$host,  
-                                 labelOptions = labelOptions(noHide = T, 
-                                                           direction = 'top',
-                                                           textOnly = F, 
-                                                           style = list(
-                                                             "color" = "gray",
-                                                             "font-family" = "sans-serif",
-                                                             "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
-                                                             "font-size" = "12px"
-                                                           ),
-                                                           opacity = 0.8,
-                                                           offset = c(0,-20),
-                                                           # make these labels part of pane 'labels' to control overlay on map
-                                                           pane = "map_labels"
-                               ), #end labelOptions
-                               clusterOptions = markerClusterOptions(
-                                 showCoverageOnHover = FALSE,
-                                 # making the cluster markers invisible, so that only labels become visible when zoomed into the awesomeMarkers
-                                 iconCreateFunction=JS("function (cluster) { 
+    
+    # ----- add labels for hosts
+    # 1st check that x_hosts is not empty
+    if(dim(x_hosts)[1] > 0){
+      my_map <- my_map %>% 
+        leaflet::addLabelOnlyMarkers(data = x_hosts, 
+                                     lng = ~venue_lon, 
+                                     lat = ~venue_lat, 
+                                     label = ~host,  
+                                     labelOptions = labelOptions(noHide = T, 
+                                                             direction = 'top',
+                                                             textOnly = F, 
+                                                             style = list(
+                                                               "color" = "gray",
+                                                               "font-family" = "sans-serif",
+                                                               "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+                                                               "font-size" = "12px"
+                                                             ),
+                                                             opacity = 0.8,
+                                                             offset = c(0,-20),
+                                                             # make these labels part of pane 'labels' to control overlay on map
+                                                             pane = "map_labels"
+                                    ), #end labelOptions
+                                    clusterOptions = markerClusterOptions(
+                                        showCoverageOnHover = FALSE,
+                                        # making the cluster markers invisible, so that only labels become visible when zoomed into the awesomeMarkers
+                                        iconCreateFunction=JS("function (cluster) { 
                                                                    c='rgb(0,0,0,0);'    
                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+ c +'\"><span>' +  '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });}"
-                                 ) #end iconCreate
-                               ) #end ClusterOptions
-    ) %>% #end addLabelOnlyMarkers
+                                        ) #end iconCreate
+                                    ) #end ClusterOptions
+        ) #end addLabelOnlyMarkers
+    } # end if
     
-    # add markers for in person events to map
-    leaflet::addAwesomeMarkers(data = x_col_person,
-                               lng = ~venue_lon, 
-                               lat = ~venue_lat, 
-                               popup = ~popup_var,
-                               label = ~label_var,
-                               icon = my_icons_person, 
-                               group = "in person",
-                               clusterOptions = 
-                                 markerClusterOptions(zoomToBoundsOnClick = TRUE, 
+    
+  # add markers for in person events to map
+  # 1st check that x_col_online is not empty (online events are chosen by user)
+  if(dim(x_col_person)[1]>0){
+    my_map <- my_map %>% 
+      leaflet::addAwesomeMarkers(data = x_col_person,
+                                 lng = ~venue_lon, 
+                                 lat = ~venue_lat, 
+                                 popup = ~popup_var,
+                                 label = ~label_var,
+                                 icon = my_icons_person, 
+                                 group = "in person",
+                                 clusterOptions = 
+                                   markerClusterOptions(zoomToBoundsOnClick = TRUE, 
                                                       # Change colour of cluster markers to grey and dark grey so that it doesn't confuse the palette                                                          
                                                       iconCreateFunction=JS("function (cluster) {    
                                                                    var childCount = cluster.getChildCount();  
@@ -133,30 +143,34 @@ my_map_activ <- function(x,
                                                                    c = 'rgba(241, 128, 23, 1);'  
                                                                    }    
                                                                    return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });}"))
-                               ) %>%  #end cluster options 
+                               ) #end cluster options 
+  } # end if for in-person markers
     
     # add markers for online events to map
-    leaflet::addAwesomeMarkers(data = x_col_online,
-                               lng = ~venue_lon, 
-                               lat = ~venue_lat, 
-                               popup = ~popup_var,
-                               label = ~label_var,
-                               icon = my_icons_online, 
-                               group = "online",
-                               clusterOptions = 
-                                 markerClusterOptions(zoomToBoundsOnClick = TRUE, 
-                                                      # Change colour of cluster markers to grey and dark grey so that it doesn't confuse the palette                                                          
-                                                      iconCreateFunction=JS("function (cluster) {    
-                                                                   var childCount = cluster.getChildCount();  
-                                                                   if (childCount < 100) {  
-                                                                   c = 'rgba(169, 169, 169, 1.0);'
-                                                                   } else if (childCount < 1000) {  
-                                                                   c = 'rgba(105, 105, 105, 1);'  
-                                                                   } else { 
-                                                                   c = 'rgba(241, 128, 23, 1);'  
-                                                                   }    
-                                                                   return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });}"))
-                               ) %>%  #end cluster options
+    # 1st check that x_col_online is not empty (online events are chosen by user)
+    if(dim(x_col_online)[1]>0){
+      my_map <- my_map %>% 
+      leaflet::addAwesomeMarkers(data = x_col_online,
+                                 lng = ~venue_lon, 
+                                 lat = ~venue_lat, 
+                                 popup = ~popup_var,
+                                 label = ~label_var,
+                                 icon = my_icons_online, 
+                                 group = "online",
+                                 clusterOptions = 
+                                   markerClusterOptions(zoomToBoundsOnClick = TRUE, 
+                                                        # Change colour of cluster markers to grey and dark grey so that it doesn't confuse the palette                                                          
+                                                        iconCreateFunction=JS("function (cluster) {    
+                                                                     var childCount = cluster.getChildCount();  
+                                                                     if (childCount < 100) {  
+                                                                     c = 'rgba(169, 169, 169, 1.0);'
+                                                                     } else if (childCount < 1000) {  
+                                                                     c = 'rgba(105, 105, 105, 1);'  
+                                                                     } else { 
+                                                                     c = 'rgba(241, 128, 23, 1);'  
+                                                                     }    
+                                                                     return new L.DivIcon({ html: '<div style=\"background-color:'+c+'\"><span>' + childCount + '</span></div>', className: 'marker-cluster', iconSize: new L.Point(40, 40) });}"))
+                                  ) %>%  #end cluster options
     
     # add label for online position
     leaflet::addLabelOnlyMarkers(data = x_col_online,
@@ -177,8 +191,10 @@ my_map_activ <- function(x,
                                                              # make these labels part of pane 'labels' to control overlay on map
                                                              pane = "map_labels"
                                  ), #end labelOptions
-                                 group = 'online') %>%
-    
+                                 group = 'online')
+    } # end if
+        
+  my_map <- my_map %>% 
     # ----- add layers control to map to choose which layers (online, in person) to show -----
     addLayersControl(
       overlayGroups = c("in person", "online"),

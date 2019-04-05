@@ -151,8 +151,8 @@ ui <- fluidPage(
                   conditionalPanel(condition = "input.var_filter1.includes('Type of Activity')",
                                    checkboxGroupInput(inputId = 'activity1', 
                                                       label = 'Choose which activity to show',
-                                                      choices = unique(mydata$activity_type),
-                                                      selected = unique(mydata$activity_type))
+                                                      choices = unique(activ$activity_type),
+                                                      selected = unique(activ$activity_type))
                   ), # end conditionalPanel
                   # add reset button for map view
                   actionButton("reset_button1", "Reset map view")
@@ -383,15 +383,15 @@ server <- function(input, output) {
   output$my_map_activities <- leaflet::renderLeaflet({
     # filter the data according to input$filter
     if(input$var_filter1 == 'Quarter'){
-      mydata_choice <- activ %>%
+      activ_choice <- activ %>%
         filter(quarter %in% input$quarter1)
-    }else{
-      mydata_choice <- activ %>% 
+    }else if(input$var_filter1 == 'Type of Activity'){
+      activ_choice <- activ %>% 
         filter(activity_type %in% input$activity1)
     } #end if else
     # draw the map,
     # (input$variable corresponds to the category chosen in the drop-down menu)
-    my_map_activ(x = mydata_choice, 
+    my_map_activ(x = activ_choice, 
                  affil = affil, 
                  mapping_var = choice(input$variable_act), 
                  view = view_orig, 
@@ -506,7 +506,7 @@ server <- function(input, output) {
      if(input$var_filter == 'Quarter'){
        mydata_choice <- mydata %>%
          filter(quarter %in% input$quarter)
-     }else{
+     }else if(input$var_filter == 'Type of Activity'){
        mydata_choice <- mydata %>% 
          filter(activity_type %in% input$activity)
      } #end if else
